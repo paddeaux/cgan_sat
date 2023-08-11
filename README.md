@@ -1,4 +1,4 @@
-# pytorch-CelebA-faCeGAN
+# Pytorch SEN12MS cGAN
 Orignal repo from evanhu1: : (https://github.com/evanhu1/pytorch-CelebA-faCeGAN/)[here]
 Deep convolutional conditional GAN implementation with CelebA dataset that generates custom faces according to textual input.
 
