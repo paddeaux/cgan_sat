@@ -9,6 +9,23 @@ from torch.utils.data import Dataset
 from PIL import Image
 from typing import Tuple, Dict, List
 
+def sen12_label_transform(desired_season):
+    """
+    Pass in a the names of all the attributes that you want
+    """
+
+    file = open('C:/Users/Paddy/CRT/Github/input/SEN12MS/sen12_seasons.csv').read().split()
+    season_names = file[0].split(',')
+    file = file[1:]
+    
+    def transform(idx):
+        season = torch.tensor([int(entry) for entry in file[idx].split(',')[1:]])
+        mask = [season_names[1:][i] in desired_season for i in range(len(season))]
+        masked = season[mask]
+        return torch.relu(masked).float()
+    return transform
+
+
 # Make function to find classes in target directory
 def find_classes(directory: str) -> Tuple[List[str], Dict[str, int]]:
     """Finds the class folder names in a target directory.
@@ -85,12 +102,12 @@ class SEN12MS_FULL(Dataset):
         
         # 3. Create class attributes
         # Get all image paths
-        self.paths = list(pathlib.Path(targ_dir).glob("*/*.tif")) # note: you'd have to update this if you've got .png's or .jpeg's
+        self.paths = list(pathlib.Path(targ_dir).glob("*/*/*.tif")) # note: you'd have to update this if you've got .png's or .jpeg's
         # Setup transforms
         self.transform = transform
         self.label = "Spring"
         # Create classes and class_to_idx attributes
-        self.classes, self.class_to_idx = find_classes(targ_dir)
+        #self.classes, self.class_to_idx = find_classes(targ_dir)
 
     # 4. Make function to load images
     def load_image(self, index: int):# -> Image.Image:
@@ -110,9 +127,10 @@ class SEN12MS_FULL(Dataset):
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, int]:
         "Returns one sample of data, data and label (X, y)."
         img = self.load_image(index)
-        class_name  = self.paths[index].parent.name # expects path in data_folder/class_name/image.jpeg
-        class_idx = self.class_to_idx[class_name]
-
+        #class_name  = self.paths[index].parent.name # expects path in data_folder/class_name/image.jpeg
+        #class_idx = self.class_to_idx[class_name]
+        # removing the need for the class_idx for the full dataset
+        class_idx = 0
         # Transform if necessary
         if self.transform:
             return self.transform(img), class_idx # return data, label (X, y)

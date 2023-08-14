@@ -37,9 +37,9 @@ def training_loop(dataloader, label_size, img_size, b_size, epochs, generator, d
 
                 #get the loss on real images (and metrics)
                 D_out_real = discriminator(images, d_labels).squeeze()
-                print("D_loss_real")
-                print("D_out_real.shape:", D_out_real.shape)
-                print("y_real.shape:", y_real.shape)
+                #print("D_loss_real")
+                #print("D_out_real.shape:", D_out_real.shape)
+                #print("y_real.shape:", y_real.shape)
                 D_loss_real = criterion(D_out_real, y_real)
                 real_accuracy = torch.mean(1 - torch.abs(D_out_real - y_real)).item()
 
