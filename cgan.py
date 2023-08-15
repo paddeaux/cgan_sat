@@ -1,9 +1,11 @@
 import torch
+import torchvision.transforms as transforms
 import torch.optim as optim
 from model import *
 from transforms import *
 from training_loop import *
 from celeba_data import *
+from sen12_data import *
 from torch.utils.data import DataLoader
 import os
 import argparse
@@ -11,25 +13,36 @@ from torchinfo import summary
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
-classes = 3
+# Make output directorys
+os.makedirs("results", exist_ok=True)
+
 topn = 1
-checkpoint_dir = 'Model_Checkpoints/labels'
-name = 'facegan'
+checkpoint_dir = os.path.join(os.path.dirname(os.getcwd()), "checkpoints")
+name = 'sen12_cgan_overfit'
 batch_size = 32
 gen_steps = 1
 disc_steps = 1
-epochs = 1
+epochs = 5
 img_size = 256
 lr = 0.0002
 beta = 0.5
-desired_attr = ['Male', 'Chubby', 'Bald']
-label_size = len(desired_attr)
+desired_season = ['fall']
+label_size = len(desired_season)
+data_source = "C:/Users/Paddy/CRT/Github/input/sen12_overfit/ROIs1158_spring_s2_1_p30.tif"
+source_labels = "C:/Users/Paddy/CRT/Github/input/sen12_overfit/seasons_labeled_overfit.csv"
+bands = "rgb" # or "rgb"
+img_channels = 3
 
 def train_model():
-    imgtransform = BasicImageCropTransform(size = (img_size, img_size), scale = (1, 2))
-    anntransform = celeb_label_transform(desired_attr)
-    #transform = TransformWrapper(imgtransform, anntransform)
-    dataset = CelebDS(imgtransform, anntransform)
+    transform_sen = transforms.Compose(
+    [
+        transforms.ToTensor(),
+        transforms.Resize((img_size,img_size),antialias=False),
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.Normalize([0.5 for _ in range(img_channels)],[0.5 for _ in range(img_channels)])
+    ])
+    anntransform = sen12_overfit_label_transform(source_labels, desired_season)
+    dataset = SEN12MS_overfit(data_source, transform_sen, anntransform, "rgb", 64)
     dataloader = DataLoader(dataset, batch_size, pin_memory = True)
     print("Total Base Examples: " + str(len(dataset)))
 
