@@ -17,7 +17,6 @@ def sen12_label_transform(source_file, desired_season):
     file = open(source_file).read().split()
     attr_names = file[0].split(',')
     file = file[1:]
-    print(file)
     def transform(idx):
         attr = torch.tensor([int(entry) for entry in file[idx].split(',')[1:]])
         mask = [attr_names[1:][i] in desired_season for i in range(len(attr))]

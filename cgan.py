@@ -18,18 +18,21 @@ os.makedirs("results", exist_ok=True)
 
 topn = 1
 checkpoint_dir = os.path.join(os.path.dirname(os.getcwd()), "checkpoints")
-name = 'sen12_cgan_overfit'
+name = 'sen12_cgan_test'
 batch_size = 32
 gen_steps = 1
 disc_steps = 1
-epochs = 5
+epochs = 1
 img_size = 256
 lr = 0.0002
 beta = 0.5
 desired_season = ['fall']
+desired_attr = ['Young']
 label_size = len(desired_season)
-data_source = "C:/Users/Paddy/CRT/Github/input/sen12_overfit/ROIs1158_spring_s2_1_p30.tif"
-source_labels = "C:/Users/Paddy/CRT/Github/input/sen12_overfit/seasons_labeled_overfit.csv"
+data_source = "C:/Users/Paddy/CRT/Github/input/SEN12MS"
+#data_source = "C:/Users/Paddy/CRT/Github/input/sen12_overfit/ROIs1158_spring_s2_1_p30.tif"
+source_labels = "C:/Users/Paddy/CRT/Github/input/SEN12MS/seasons_labeled_spring.csv"
+#source_labels = "C:/Users/Paddy/CRT/Github/input/sen12_overfit/seasons_labeled_overfit.csv"
 bands = "rgb" # or "rgb"
 img_channels = 3
 
@@ -41,12 +44,22 @@ def train_model():
         transforms.RandomHorizontalFlip(p=0.5),
         transforms.Normalize([0.5 for _ in range(img_channels)],[0.5 for _ in range(img_channels)])
     ])
-    anntransform = sen12_overfit_label_transform(source_labels, desired_season)
-    dataset = SEN12MS_overfit(data_source, transform_sen, anntransform, "rgb", 64)
-    dataloader = DataLoader(dataset, batch_size, pin_memory = True)
-    print("Total Base Examples: " + str(len(dataset)))
+    anntransform_celeb = celeb_label_transform(desired_attr)
+    anntransform_sen12 = sen12_label_transform(source_labels, desired_season)
+    anntransform_sen12_overfit = sen12_overfit_label_transform(source_labels, desired_season)
+    anntransform_celeb_overfit = celeb_label_transform_overfit(desired_attr)
 
-    print("image dimensions:", dataset[0][0].shape)
+    imgtransform = BasicImageCropTransform(size = (img_size, img_size), scale = (1, 2))
+
+    dataset_sen12 = SEN12MS(data_source, transform_sen, anntransform_sen12, "rgb")
+    dataset_sen12_overfit = SEN12MS_overfit(data_source, transform_sen, anntransform_sen12_overfit, "rgb", 200000)
+    dataset_celeba = CelebDS(imgtransform, anntransform_celeb)
+    dataset_celeba_overfit = CelebDS_overfit(imgtransform, anntransform_celeb_overfit, 50000)
+    
+    dataloader = DataLoader(dataset_sen12, batch_size, pin_memory = True)
+    print("Total Base Examples: " + str(len(dataset_sen12)))
+
+    print("image dimensions:", dataset_sen12[0][0].shape)
 
     if torch.cuda.is_available():
         device = torch.device("cuda:0")
