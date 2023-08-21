@@ -27,8 +27,8 @@ img_size = 256
 lr = 0.0002
 beta = 0.5
 desired_season = ['fall']
-desired_attr = ['Young']
-label_size = len(desired_season)
+desired_attr = ['Young', 'Attractive']
+label_size = len(desired_attr)
 data_source = "C:/Users/Paddy/CRT/Github/input/SEN12MS"
 #data_source = "C:/Users/Paddy/CRT/Github/input/sen12_overfit/ROIs1158_spring_s2_1_p30.tif"
 source_labels = "C:/Users/Paddy/CRT/Github/input/SEN12MS/seasons_labeled_spring.csv"
@@ -37,12 +37,14 @@ bands = "rgb" # or "rgb"
 img_channels = 3
 
 def train_model():
+    add_noise = lambda img: torch.min(torch.ones(img_channels, img_size, img_size), torch.max(-torch.ones(img_channels, img_size, img_size), img + torch.randn(img_channels, img_size, img_size) * .1 + 0))
+
     transform_sen = transforms.Compose(
     [
         transforms.ToTensor(),
-        transforms.Resize((img_size,img_size),antialias=False),
-        transforms.RandomHorizontalFlip(p=0.5),
-        transforms.Normalize([0.5 for _ in range(img_channels)],[0.5 for _ in range(img_channels)])
+        #transforms.Resize((img_size,img_size),antialias=False),
+        #transforms.RandomHorizontalFlip(p=0.5),
+        transforms.Normalize([0.5 for _ in range(img_channels)],[0.5 for _ in range(img_channels)]),
     ])
     anntransform_celeb = celeb_label_transform(desired_attr)
     anntransform_sen12 = sen12_label_transform(source_labels, desired_season)
@@ -56,10 +58,13 @@ def train_model():
     dataset_celeba = CelebDS(imgtransform, anntransform_celeb)
     dataset_celeba_overfit = CelebDS_overfit(imgtransform, anntransform_celeb_overfit, 50000)
     
-    dataloader = DataLoader(dataset_sen12, batch_size, pin_memory = True)
-    print("Total Base Examples: " + str(len(dataset_sen12)))
+    print("CelebA Input dimenstion:", dataset_celeba[0][0].shape)
+    print("Sen12MS Input dimenstion:", dataset_sen12[0][0].shape)
 
-    print("image dimensions:", dataset_sen12[0][0].shape)
+    dataloader = DataLoader(dataset_celeba, batch_size, pin_memory = True)
+    print("Total Base Examples: " + str(len(dataset_celeba)))
+
+    print("image dimensions:", dataset_celeba[0][0].shape)
 
     if torch.cuda.is_available():
         device = torch.device("cuda:0")
