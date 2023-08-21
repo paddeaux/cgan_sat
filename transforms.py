@@ -3,10 +3,7 @@ import torch
 import numpy as np
 from torchvision.transforms import RandomResizedCrop, ToTensor, Compose, ToPILImage
 
-img_size = 256
-img_channels = 3
-
-add_noise = lambda img: torch.min(torch.ones(img_channels, img_size, img_size), torch.max(-torch.ones(img_channels, img_size, img_size), img + torch.randn(img_channels, img_size, img_size) * .1 + 0))
+add_noise = lambda img: torch.min(torch.ones(3, 256, 256), torch.max(-torch.ones(3, 256, 256), img + torch.randn(3, 256, 256) * .1 + 0))
 
 def BasicImageCropTransform(size, scale = (1, 2)):
     """
@@ -23,7 +20,7 @@ def BasicImageCropTransform(size, scale = (1, 2)):
     ratio = (size[1]/size[0], size[1]/size[0])
     transform = Compose([
         ToTensor(),
-        RandomResizedCrop(size, scale, ratio, antialias=True),
+        RandomResizedCrop(size, scale, ratio),
         lambda img: img * 2 - 1,
         add_noise
     ])

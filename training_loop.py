@@ -94,6 +94,8 @@ def training_loop(dataloader, label_size, img_size, b_size, epochs, generator, d
             images = {'Image'+str(i): [image.numpy(), label.numpy()] for i, (image, label) in enumerate(zip(images, labels))}
             display_multiple_img(images, epoch, min(b_size, 8), 1)
 
+
+
         if checkpoint_directory:
             if not name:
                 name = 'unnamed'
@@ -105,7 +107,7 @@ def training_loop(dataloader, label_size, img_size, b_size, epochs, generator, d
                         'discriminator_state_dict': discriminator.state_dict(),
                         'generator_optimizer_state_dict': optimizerG.state_dict(),
                         'discriminator_optimizer_state_dict': optimizerD.state_dict(),
-                        }, checkpoint_directory + '/' + name + '.pt')
+                        }, checkpoint_directory + '/' + name + '_' + str(epoch) + '.pt')
 
     return generator_history, discriminator_history
 
