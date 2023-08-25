@@ -18,8 +18,8 @@ os.makedirs("/data/pgorry/checkpoints", exist_ok=True)
 os.makedirs("/data/pgorry/losses", exist_ok=True)
 
 checkpoint_dir = "/data/pgorry/checkpoints"
-name = 'sen12_test'
-batch_size = 32
+name = 'celeba_4'
+batch_size = 8
 gen_steps = 1
 disc_steps = 1
 epochs = 10
@@ -35,7 +35,7 @@ data_source = "/data/pgorry/sen12ms/s2"
 source_labels = "/data/pgorry/sen12ms/seasons_labeled.csv"
 
 imgtransform = BasicImageCropTransform(size = (img_size, img_size), scale = (1, 2))
-#anntransform = celeb_label_transform(desired_attr)
+anntransform = celeb_label_transform(desired_attr)
 #transform = TransformWrapper(imgtransform, anntransform)
 
 transform_sen = transforms.Compose(
@@ -47,10 +47,10 @@ transform_sen = transforms.Compose(
     ])
 anntransform_sen12 = sen12_label_transform(source_labels, desired_season)
 
-dataset = SEN12MS(data_source, imgtransform, anntransform_sen12, "rgb")
+#dataset = SEN12MS(data_source, imgtransform, anntransform_sen12, "rgb")
 
 
-#dataset = CelebDS(imgtransform, anntransform)
+dataset = CelebDS(imgtransform, anntransform)
 
 dataloader = DataLoader(dataset, batch_size, pin_memory = True)
 print("Total Base Examples: " + str(len(dataset)))
