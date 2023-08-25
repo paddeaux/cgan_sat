@@ -4,7 +4,7 @@ import pathlib
 from tqdm import tqdm
 
 path = "/data/pgorry/input/sen12ms/s2"
-filenames = list(pathlib.Path(path).glob("*/*/*.tif"))
+filenames = list(pathlib.Path(path).glob("*/*.tif"))
 
 foldernames = list(pathlib.Path(path).glob("*/"))
 
