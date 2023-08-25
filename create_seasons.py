@@ -3,7 +3,7 @@ import pandas as pd
 import pathlib
 from tqdm import tqdm
 
-path = "/data/pgorry/input/sen12ms/s2"
+path = "/data/pgorry/input/sen12ms/s2/"
 filenames = list(pathlib.Path(path).glob("*/*/*.tif"))
 print(filenames)
 foldernames = list(pathlib.Path(path).glob("*/"))
