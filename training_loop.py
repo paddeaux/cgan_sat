@@ -118,8 +118,8 @@ def training_loop(dataloader, label_size, desired_attr, img_size, b_size, epochs
         df_gen = pd.DataFrame(generator_history, columns=['gen_loss'])
         df_discrim = pd.DataFrame(discriminator_history, columns=['discrim_loss'])
 
-        df_gen.to_csv(f"losses/gen_loss_history_epoch{epoch}.csv")
-        df_discrim.to_csv(f"losses/discrim_loss_history_epoch{epoch}.csv")
+        df_gen.to_csv(f"/data/pgorry/losses/gen_loss_history_epoch{epoch}.csv")
+        df_discrim.to_csv(f"/data/pgorrylosses/discrim_loss_history_epoch{epoch}.csv")
 
     return generator_history, discriminator_history
 
