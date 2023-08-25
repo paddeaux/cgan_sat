@@ -18,7 +18,7 @@ os.makedirs("losses", exist_ok=True)
 
 checkpoint_dir = os.path.join(os.path.dirname(os.getcwd()), "checkpoints")
 name = 'celebA_4attr'
-batch_size = 16
+batch_size = 32
 gen_steps = 1
 disc_steps = 1
 epochs = 10
@@ -44,12 +44,12 @@ transform_sen = transforms.Compose(
         transforms.RandomHorizontalFlip(p=0.5),
         transforms.Normalize([0.5 for _ in range(img_channels)],[0.5 for _ in range(img_channels)]),
     ])
-#anntransform_sen12 = sen12_label_transform(source_labels, desired_season)
+anntransform_sen12 = sen12_label_transform(source_labels, desired_season)
 
-#dataset = SEN12MS(data_source, imgtransform, anntransform_sen12, "rgb")
+dataset = SEN12MS(data_source, imgtransform, anntransform_sen12, "rgb")
 
 
-dataset = CelebDS(imgtransform, anntransform)
+#dataset = CelebDS(imgtransform, anntransform)
 
 dataloader = DataLoader(dataset, batch_size, pin_memory = True)
 print("Total Base Examples: " + str(len(dataset)))
