@@ -40,7 +40,7 @@ data_source = "/data/pgorry/sen12ms/s2"
 source_labels = "/data/pgorry/sen12ms/seasons_labeled.csv"
 
 imgtransform = BasicImageCropTransform(size = (img_size, img_size), scale = (1, 2))
-anntransform = celeb_label_transform(desired_attr)
+#anntransform = celeb_label_transform(desired_attr)
 #transform = TransformWrapper(imgtransform, anntransform)
 
 transform_sen = transforms.Compose(
