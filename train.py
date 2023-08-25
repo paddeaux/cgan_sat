@@ -16,9 +16,14 @@ os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 os.makedirs("results", exist_ok=True)
 os.makedirs("/data/pgorry/checkpoints", exist_ok=True)
 os.makedirs("/data/pgorry/losses", exist_ok=True)
+#os.makedirs("/home/paddy/git/checkpoints", exist_ok=True)
+#os.makedirs("/home/paddy/git/losses", exist_ok=True)
+
 
 checkpoint_dir = "/data/pgorry/checkpoints"
-name = 'celeba_4'
+#checkpoint_dir = "/home/paddy/git/checkpoints"
+
+name = 'sen12'
 batch_size = 8
 gen_steps = 1
 disc_steps = 1
@@ -47,10 +52,10 @@ transform_sen = transforms.Compose(
     ])
 anntransform_sen12 = sen12_label_transform(source_labels, desired_season)
 
-#dataset = SEN12MS(data_source, imgtransform, anntransform_sen12, "rgb")
+dataset = SEN12MS(data_source, imgtransform, anntransform_sen12, "rgb")
 
 
-dataset = CelebDS(imgtransform, anntransform)
+#dataset = CelebDS(imgtransform, anntransform)
 
 dataloader = DataLoader(dataset, batch_size, pin_memory = True)
 print("Total Base Examples: " + str(len(dataset)))
