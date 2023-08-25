@@ -5,9 +5,7 @@ from tqdm import tqdm
 
 path = "/data/pgorry/sen12ms/s2/"
 filenames = list(pathlib.Path(path).glob("*/*/*.tif"))
-print(filenames)
-foldernames = list(pathlib.Path(path).glob("*/"))
-print(foldernames)
+foldernames = list(pathlib.Path(path).glob("*/*/"))
 seasons_original = pd.read_csv('/data/pgorry/sen12ms/seasons.csv')
 
 seasons = []
