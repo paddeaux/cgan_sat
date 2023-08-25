@@ -14,14 +14,14 @@ import pandas as pd
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 os.makedirs("results", exist_ok=True)
-os.makedirs("/data/pgorry/checkpoints", exist_ok=True)
-os.makedirs("/data/pgorry/losses", exist_ok=True)
-#os.makedirs("/home/paddy/git/checkpoints", exist_ok=True)
-#os.makedirs("/home/paddy/git/losses", exist_ok=True)
+#os.makedirs("/data/pgorry/checkpoints", exist_ok=True)
+#os.makedirs("/data/pgorry/losses", exist_ok=True)
+os.makedirs("/home/paddy/git/checkpoints", exist_ok=True)
+os.makedirs("/home/paddy/git/losses", exist_ok=True)
 
 
-checkpoint_dir = "/data/pgorry/checkpoints"
-#checkpoint_dir = "/home/paddy/git/checkpoints"
+#checkpoint_dir = "/data/pgorry/checkpoints"
+checkpoint_dir = "/home/paddy/git/checkpoints"
 
 name = 'celeba_4'
 batch_size = 8
@@ -29,7 +29,7 @@ gen_steps = 1
 disc_steps = 1
 epochs = 10
 img_size = 256
-lr = 0.0002
+lr = 0.00002
 beta = 0.5
 desired_attr = ['Attractive'] 
 desired_season = ['fall']
