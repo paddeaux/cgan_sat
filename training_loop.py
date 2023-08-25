@@ -40,8 +40,8 @@ def training_loop(dataloader, label_size, desired_attr, img_size, b_size, epochs
 
                 #get the loss on real images (and metrics)
                 D_out_real = discriminator(images, d_labels).squeeze()
-                #D_loss_real = criterion(D_out_real, y_real)
-                D_loss_real = wasserstein_loss(D_out_real, y_real)
+                D_loss_real = criterion(D_out_real, y_real)
+                #D_loss_real = wasserstein_loss(D_out_real, y_real)
 
                 real_accuracy = torch.mean(1 - torch.abs(D_out_real - y_real)).item()
 
@@ -50,8 +50,8 @@ def training_loop(dataloader, label_size, desired_attr, img_size, b_size, epochs
                 gen_image = generator(noise, g_labels)
 
                 D_out_fake = discriminator(gen_image, d_labels).squeeze()
-                #D_loss_fake = criterion(D_out_fake, y_fake)
-                D_loss_fake = wasserstein_loss(D_out_fake, y_fake)
+                D_loss_fake = criterion(D_out_fake, y_fake)
+                #D_loss_fake = wasserstein_loss(D_out_fake, y_fake)
 
                 fake_accuracy = torch.mean(1 - torch.abs(D_out_fake - y_fake)).item()
 
@@ -74,8 +74,8 @@ def training_loop(dataloader, label_size, desired_attr, img_size, b_size, epochs
                 gen_image = generator(noise, g_labels)
 
                 D_out_gen = discriminator(gen_image, d_labels).squeeze()
-                #gen_loss = criterion(D_out_gen, y_real)
-                gen_loss = wasserstein_loss(D_out_gen, y_real)
+                gen_loss = criterion(D_out_gen, y_real)
+                #gen_loss = wasserstein_loss(D_out_gen, y_real)
 
                 #backprop and record metric
                 gen_loss.backward()
