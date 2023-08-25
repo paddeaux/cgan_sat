@@ -14,10 +14,11 @@ import pandas as pd
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 os.makedirs("results", exist_ok=True)
-os.makedirs("losses", exist_ok=True)
+os.makedirs("/data/pgorry/checkpoints", exist_ok=True)
+os.makedirs("/data/pgorry/losses", exist_ok=True)
 
-checkpoint_dir = os.path.join(os.path.dirname(os.getcwd()), "checkpoints")
-name = 'celebA_4attr'
+checkpoint_dir = "/data/pgorry/checkpoints"
+name = 'sen12_test'
 batch_size = 32
 gen_steps = 1
 disc_steps = 1
@@ -30,8 +31,8 @@ desired_season = ['fall']
 label_size = len(desired_attr)
 img_channels = 3
 
-data_source = "C:/Users/Paddy/CRT/Github/input/SEN12MS"
-source_labels = "C:/Users/Paddy/CRT/Github/input/SEN12MS/seasons_labeled_spring.csv"
+data_source = "/data/pgorry/sen12ms/s2"
+source_labels = "/data/pgorry/sen12ms/seasons_labeled.csv"
 
 imgtransform = BasicImageCropTransform(size = (img_size, img_size), scale = (1, 2))
 anntransform = celeb_label_transform(desired_attr)
