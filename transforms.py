@@ -20,7 +20,7 @@ def BasicImageCropTransform(size, scale = (1, 2)):
     ratio = (size[1]/size[0], size[1]/size[0])
     transform = Compose([
         ToTensor(),
-        RandomResizedCrop(size, scale, ratio),
+        RandomResizedCrop(size, scale, ratio,antialias=None),
         lambda img: img * 2 - 1,
         add_noise
     ])

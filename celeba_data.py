@@ -6,7 +6,7 @@ class CelebDS(Dataset):
     def __init__(self, imgtransform, anntransform):
         self.imgtransform = imgtransform
         self.anntransform = anntransform
-        self.ds = ImageFolder("C:/Users/Paddy/CRT/Github/input/CelebA_50k", transform = imgtransform)
+        self.ds = ImageFolder("/home/paddy/git/input/celeba", transform = imgtransform)
         
     def __getitem__(self, idx):
         return (self.ds[idx][0], self.anntransform(idx))
@@ -19,7 +19,7 @@ def celeb_label_transform(desired_attr):
     Pass in a the names of all the attributes that you want
     """
 
-    file = open('C:/Users/Paddy/CRT/Github/input/CelebA_50k/list_attr_celeba.csv').read().split()
+    file = open('/home/paddy/git/input/celeba/list_attr_celeba_four.csv').read().split()
     attr_names = file[0].split(',')
     file = file[1:]
     
@@ -35,5 +35,5 @@ def dummy_label_transform():
         return torch.tensor([0, 0])
     return transform
 
-file = open('C:/Users/Paddy/CRT/Github/input/CelebA_50k/list_attr_celeba.csv').read().split()
+file = open('/home/paddy/git/input/celeba/list_attr_celeba_four.csv').read().split()
 attr_names = file[0].split(',')
