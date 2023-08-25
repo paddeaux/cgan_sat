@@ -37,6 +37,3 @@ def dummy_label_transform():
     def transform(idx):
         return torch.tensor([0, 0])
     return transform
-
-file = open('/home/paddy/git/input/simple_season/simple_season.csv').read().split()
-attr_names = file[0].split(',')
