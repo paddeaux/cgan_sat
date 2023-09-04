@@ -14,17 +14,17 @@ import pandas as pd
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 os.makedirs("results", exist_ok=True)
-os.makedirs("/data/pgorry/checkpoints", exist_ok=True)
-os.makedirs("/data/pgorry/losses", exist_ok=True)
+os.makedirs("/home/paddy/git/checkpoints", exist_ok=True)
+os.makedirs("/home/paddy/git/losses", exist_ok=True)
 #os.makedirs("/home/paddy/git/checkpoints", exist_ok=True)
 #os.makedirs("/home/paddy/git/losses", exist_ok=True)
 
 
-checkpoint_dir = "/data/pgorry/checkpoints"
+checkpoint_dir = "/home/paddy/git/checkpoints"
 #checkpoint_dir = "/home/paddy/git/checkpoints"
 
 name = 'sen12'
-batch_size = 8
+batch_size = 16
 gen_steps = 1
 disc_steps = 1
 epochs = 10
@@ -36,8 +36,8 @@ desired_season = ['fall']
 label_size = len(desired_attr)
 img_channels = 3
 
-data_source = "/data/pgorry/sen12ms/s2"
-source_labels = "/data/pgorry/sen12ms/seasons_labeled.csv"
+data_source = "/home/paddy/git/input/sen12ms"
+source_labels = "/home/paddy/git/input/sen12ms/seasons_labeled.csv"
 
 imgtransform = BasicImageCropTransform(size = (img_size, img_size), scale = (1, 2))
 #anntransform = celeb_label_transform(desired_attr)
@@ -53,7 +53,6 @@ transform_sen = transforms.Compose(
 anntransform_sen12 = sen12_label_transform(source_labels, desired_season)
 
 dataset = SEN12MS(data_source, imgtransform, anntransform_sen12, "rgb")
-
 
 #dataset = CelebDS(imgtransform, anntransform)
 
@@ -79,8 +78,8 @@ generator = Generator(label_size).to(device)
 generator.apply(weights_init)
 discriminator = Discriminator(label_size).to(device)
 discriminator.apply(weights_init)
-optimizerG = optim.Adam(generator.parameters(), lr=lr, betas=(beta, 0.999))
-optimizerD = optim.Adam(discriminator.parameters(), lr=lr, betas=(beta, 0.999))
+optimizerG = optim.RMSprop(generator.parameters(), lr=lr)
+optimizerD = optim.RMSprop(discriminator.parameters(), lr=lr)
 
 gen_history, discrim_history = training_loop(dataloader, label_size, desired_attr, img_size, batch_size, 
                                              epochs, generator, discriminator, optimizerG, optimizerD, True,

@@ -1,13 +1,10 @@
 import torch
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-import pandas as pd
 
-def training_loop(dataloader, label_size, desired_attr, img_size, b_size, epochs, generator, discriminator, optimizerG, optimizerD, show_after_epoch = True,
-                  checkpoint_directory = None, name = None, gen_steps = 1, disc_steps = 1, device = torch.device("cpu")):
+def training_loop(dataloader, label_size, img_size, b_size, epochs, generator, discriminator, optimizerG, optimizerD, show_after_epoch = True,
+                  checkpoint_directory = None, name = None, gen_steps = 1, disc_steps = 1, device = torch.device("cuda")):
     criterion = torch.nn.BCELoss()
-    def wasserstein_loss(y_true, y_pred):
-        return torch.mean(y_true * y_pred)
     generator_history = []
     discriminator_history = []
     batch_size = b_size
@@ -41,8 +38,6 @@ def training_loop(dataloader, label_size, desired_attr, img_size, b_size, epochs
                 #get the loss on real images (and metrics)
                 D_out_real = discriminator(images, d_labels).squeeze()
                 D_loss_real = criterion(D_out_real, y_real)
-                #D_loss_real = wasserstein_loss(D_out_real, y_real)
-
                 real_accuracy = torch.mean(1 - torch.abs(D_out_real - y_real)).item()
 
                 #get the loss on fake images (and metrics)
@@ -51,8 +46,6 @@ def training_loop(dataloader, label_size, desired_attr, img_size, b_size, epochs
 
                 D_out_fake = discriminator(gen_image, d_labels).squeeze()
                 D_loss_fake = criterion(D_out_fake, y_fake)
-                #D_loss_fake = wasserstein_loss(D_out_fake, y_fake)
-
                 fake_accuracy = torch.mean(1 - torch.abs(D_out_fake - y_fake)).item()
 
                 #add losses and backprop
@@ -75,7 +68,6 @@ def training_loop(dataloader, label_size, desired_attr, img_size, b_size, epochs
 
                 D_out_gen = discriminator(gen_image, d_labels).squeeze()
                 gen_loss = criterion(D_out_gen, y_real)
-                #gen_loss = wasserstein_loss(D_out_gen, y_real)
 
                 #backprop and record metric
                 gen_loss.backward()
@@ -100,33 +92,27 @@ def training_loop(dataloader, label_size, desired_attr, img_size, b_size, epochs
             images = [gen_image[i].squeeze().to('cpu').detach() for i in range(min(b_size, 8))]
             labels = [labels[i].squeeze().to('cpu').detach() for i in range(min(b_size, 8))]
             images = {'Image'+str(i): [image.numpy(), label.numpy()] for i, (image, label) in enumerate(zip(images, labels))}
-            display_multiple_img(images, epoch, desired_attr, 2, 4)
-
-
+            display_multiple_img(images, epoch, min(b_size, 8), 1)
 
         if checkpoint_directory:
             if not name:
                 name = 'unnamed'
             torch.save({
+                        'generator_losses': generator_history,
+                        'discriminator_losses': discriminator_history,
                         'epoch': epoch,
                         'generator_state_dict': generator.state_dict(),
                         'discriminator_state_dict': discriminator.state_dict(),
                         'generator_optimizer_state_dict': optimizerG.state_dict(),
                         'discriminator_optimizer_state_dict': optimizerD.state_dict(),
                         }, checkpoint_directory + '/' + name + '_' + str(epoch) + '.pt')
-        print("Saving loss history...")
-        df_gen = pd.DataFrame(generator_history, columns=['gen_loss'])
-        df_discrim = pd.DataFrame(discriminator_history, columns=['discrim_loss'])
-
-        df_gen.to_csv(f"/data/pgorry/losses/gen_loss_history_epoch{epoch}.csv")
-        df_discrim.to_csv(f"/data/pgorry/losses/discrim_loss_history_epoch{epoch}.csv")
 
     return generator_history, discriminator_history
 
-def display_multiple_img(images, epoch, desired, rows = 2, cols= 4):
+def display_multiple_img(images, epoch, rows = 1, cols=1):
     fig, ax = plt.subplots(nrows=rows,ncols=cols, figsize = (30, 15))
     for ind,title in enumerate(images):
         ax.flatten()[ind].imshow((images[title][0].swapaxes(0, -1).swapaxes(0, 1) + 1) / 2)
-        ax.flatten()[ind].set_title(f"{desired[0]}" if images[title][1] == 1 else f"Not {desired[0]}")
+        #ax.flatten()[ind].set_title(f"{desired[0]}" if images[title][1] == 1 else f"Not {desired[0]}")
         ax.flatten()[ind].set_axis_off()
     plt.savefig('results/epoch' + str(epoch) + '.png')

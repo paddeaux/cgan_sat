@@ -14,13 +14,10 @@ import pandas as pd
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 os.makedirs("results", exist_ok=True)
-#os.makedirs("/data/pgorry/checkpoints", exist_ok=True)
-#os.makedirs("/data/pgorry/losses", exist_ok=True)
 os.makedirs("/home/paddy/git/checkpoints", exist_ok=True)
 os.makedirs("/home/paddy/git/losses", exist_ok=True)
 
 
-#checkpoint_dir = "/data/pgorry/checkpoints"
 checkpoint_dir = "/home/paddy/git/checkpoints"
 
 name = 'celeba_4'
@@ -82,6 +79,6 @@ discriminator.apply(weights_init)
 optimizerG = optim.Adam(generator.parameters(), lr=lr, betas=(beta, 0.999))
 optimizerD = optim.Adam(discriminator.parameters(), lr=lr, betas=(beta, 0.999))
 
-gen_history, discrim_history = training_loop(dataloader, label_size, desired_attr, img_size, batch_size, 
+gen_history, discrim_history = training_loop(dataloader, label_size, img_size, batch_size, 
                                              epochs, generator, discriminator, optimizerG, optimizerD, True,
                                              checkpoint_dir, name, gen_steps, disc_steps, device)

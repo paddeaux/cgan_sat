@@ -21,7 +21,7 @@ def celeb_label_transform(desired_attr):
     Pass in a the names of all the attributes that you want
     """
 
-    file = open('/home/paddy/git/input/celeba/list_attr_celeba_four.csv').read().split()
+    file = open('/home/paddy/git/input/celeba/list_attr_celeba.csv').read().split()
     attr_names = file[0].split(',')
     file = file[1:]
     
